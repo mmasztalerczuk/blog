@@ -1,0 +1,80 @@
+---
+title: 'Structured logging in GCP'
+date: '2023-07-04'
+tags: ['python', 'logging', 'gcp']
+draft: false
+summary: 'The Time Traveller (for so it will be convenient to speak of him) was
+expounding a recondite matter to us. His pale grey eyes shone and
+twinkled, and his usually pale face was flushed and animated...'
+---
+
+## Introduction
+
+Logging is an integral part of any application or system, enabling event tracking, performance monitoring, and troubleshooting. Google Cloud Platform (GCP) offers advanced logging tools, and using JSON for logging can bring many benefits.
+
+The JSON (JavaScript Object Notation) format provides a structured representation of data that facilitates the analysis and processing of logs. JSON logs consist of key-value pairs that are easy to read and interpret. This makes it easier to locate and identify specific information in the logs, such as transaction IDs, event type, request details, etc. The hierarchical structure of JSON allows you to organize data in a more transparent way.
+
+Example of log in JSON format:
+
+```
+{
+   "timestamp": "2023-07-04T10:23:45Z",
+   "severity": "INFO",
+   "message": "User 'john@example.com' logged in successfully",
+   "user_id": "123456",
+   "source_ip": "192.168.0.1",
+   "application": "my-app"
+}
+
+```
+
+Thanks to the structured JSON format, the logs become more readable and easier to analyze. You can use JSON parsing tools such as queries, filters, and transformations to process and visualize logs in a more meaningful way. GCP provides advanced log viewing tools that allow you to search and filter logs based on specific keys and values. This allows you to focus on specific events or parameters to find the information you need and diagnose problems.
+
+### GCP and JSON format
+
+Using logs in JSON format works perfectly with the GCP tools ecosystem. GCP offers advanced logging services such as Cloud Logging that automatically process logs in JSON format. Logs in this format are easily sent and processed by other GCP tools, such as Google BigQuery, Cloud Pub/Sub, Cloud Monitoring, etc. Thanks to this, you can create queries, reports, graphs and use the full capabilities of GCP for log analysis and monitoring.
+
+The JSON format is flexible and easily extensible. Additional fields can be added to JSON logs to store additional information that can be useful for analysis and diagnostics. For example, you can add a "user_id" or "request_id" field to your logs to more easily track user activity or relate requests to responses. In the case of extending the functionality of the application or introducing new requirements, the JSON format allows you to easily add new fields without changing the structure of the logs.
+
+### Labels
+
+It is worth mentioning about user-defined labels. They allow you to organize logs based on specific criteria. You can assign tags to logs that are related to a specific area of operation, application, module or resource in the system. For example, you can use "app:my-app" for logs related to a specific application or "module:backend" for logs related to a specific system module. This makes it easy to filter and analyze logs related to specific areas or components of the system.
+
+Sample code:
+
+```python
+import logging
+from google.cloud import logging as gcp_logging
+
+client = gcp_logging.Client()
+
+logger = client.logger('my-log')
+
+data_dict = {"message": "Random text", "hello": "world!"}
+logger.info(data_dict, extra={"labels": {"hello": "world"}})
+
+```
+
+### Google Cloud Logging
+
+Google Cloud Logging is a service for collecting, viewing, analyzing and monitoring logs from various sources in GCP environment. It works by sending logs to a central storage and indexing location for easy analysis and processing.
+
+GCP automatically manages log storage, which allows log data to be stored long-term and accessed at any time. In addition, Cloud Logging indexes logs, which allows you to effectively search and filter logs based on specific criteria, such as time range, severity level, labels or specific log fields
+
+An example log looks like this:
+
+<div className="flex flex-wrap -mx-2 overflow-hidden xl:-mx-2">
+  <div className="my-1 px-2 w-full overflow-hidden">![Maple](/static/images/labels.png)</div>
+</div>
+
+We are able to search the content of our logs using queries that may look like this:
+
+```
+jsonPayload.hello =~ "Test"
+```
+
+We can easily search for a message filtering not only by message, but also by many other parameters that we define ourselves.
+
+### Summary
+
+In conclusion, structured logs are more useful, flexible and easier to analyze than logs in text format. They facilitate searching, analyzing, integrating with analytical tools and automating processes related to logging and monitoring.
