@@ -1,0 +1,38 @@
+---
+title: 'Python and Systemd'
+date: '2023-07-14'
+tags: ['python', 'systemd', 'logging', 'linux', 'daemons']
+draft: false
+summary: 'Recently I have been tweaking a little bit of my small programs that run as daemons started/managed via systemd...'
+---
+
+### Systemd
+
+Recently I have been tweaking a little bit of my small programs that run as daemons started/managed via systemd.
+
+Systemd is an initialization and process and service management system for Linux kernel-based operating systems. It was introduced as an alternative to the traditional System V-based initialization system (sysvinit) and offers a number of advanced features. Systemd has many tasks and functions, including system initialization, service management, process monitoring or event log.
+
+For me, the most important thing was the logging part, or so-called journal. Systemd Journal is the journaling (logging) system used by systemd on Linux systems. It replaces the traditional text log files (e.g. `/var/log/messages`) used in older initialization systems.
+
+Journal provides features such as binary format, indexing, encryption, metadata. And most importantly for me, there is a simple way to manipulate journal data using python.
+
+### Python and systemd-journal
+
+To use systemd journal using Python, you can use the `systemd.journal` module, which provides an interface for reading and writing the systemd journal. The `systemd.journal` module is part of the `systemd-python` package. Github: https://github.com/systemd/python-systemd
+
+```python
+from systemd import journal
+
+# Zapisz wpis do dziennika
+journal.send('Wiadomość logu', SYSLOG_IDENTIFIER='my_app', PRIORITY=journal.LOG_INFO)
+
+# Zapisz wpis z dodatkowymi metadanymi
+journal.send('Inna wiadomość logu', SYSLOG_IDENTIFIER='my_app', PRIORITY=journal.LOG_DEBUG, MY_CUSTOM_FIELD='Custom value')
+
+```
+
+We can also use various methods, such as `seek_realtime()`, `seek_monotonic()` and `add_match()`, to filter log entries based on various criteria, such as time interval, logging level, process ID, etc.
+
+To write a log entry, we use the `journal.send()` function and pass the log message along with optional metadata such as `SYSLOG_IDENTIFIER` (application identifier), `PRIORITY` (logging priority), etc.
+
+Using the `systemd.journal` module, you can flexibly operate on the systemd log and customize it to your needs in an application written in Python.
